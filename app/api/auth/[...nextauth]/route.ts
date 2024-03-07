@@ -4,14 +4,15 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import DiscordProvider from "next-auth/providers/discord";
 
 const prisma = new PrismaClient();
-const scopes = ["identify", "email", "applications.commands.permissions"];
+const scopes = ["identify"].join(" ");
+
 const handler = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
     DiscordProvider({
       clientId: process.env.DISCORD_CLIENT_ID ?? "",
       clientSecret: process.env.DISCORD_CLIENT_SECRET ?? "",
-      authorization: { params: { scope: scopes.join(" ") } },
+      authorization: { params: { scope: scopes } },
     }),
   ],
 });
