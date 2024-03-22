@@ -10,7 +10,7 @@ interface Props {
 const IssuesPage = async ({ searchParams }: Props) => {
   const issues = await prisma.issue.findMany({
     where: {
-      status: searchParams.status,
+      status: searchParams.status === "ALL" ? undefined : searchParams.status,
     },
   });
 
