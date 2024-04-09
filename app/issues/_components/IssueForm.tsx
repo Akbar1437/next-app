@@ -4,7 +4,7 @@ import Spinner from "@/app/components/Spinner";
 import SimpleMDE from "react-simplemde-editor";
 import { issueSchema } from "@/app/validationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Callout, TextField } from "@radix-ui/themes";
+import { Button, Callout, Select, TextField } from "@radix-ui/themes";
 import axios from "axios";
 import "easymde/dist/easymde.min.css";
 import { useRouter } from "next/navigation";
@@ -14,7 +14,11 @@ import { z } from "zod";
 import { Issue } from "@prisma/client";
 
 type IssueFormData = z.infer<typeof issueSchema>;
-
+const statuses = [
+  { label: "Open", value: "OPEN" },
+  { label: "In Progress", value: "IN_PROGRESS" },
+  { label: "Closed", value: "CLOSED" },
+];
 const IssueForm = ({ issue }: { issue?: Issue }) => {
   const router = useRouter();
   const {
@@ -60,6 +64,29 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
           />
         </TextField.Root>
         {errors.title && <ErrorMessage>{errors.title.message}</ErrorMessage>}
+
+        <Controller
+          name="status"
+          control={control}
+          render={({ field }) => (
+            <Select.Root
+              defaultValue={issue?.status}
+              onValueChange={field.onChange}
+            >
+              <Select.Trigger placeholder="Status..." />
+              <Select.Content>
+                <Select.Group>
+                  {statuses?.map((status) => (
+                    <Select.Item key={status.label} value={status.value}>
+                      {status.label}
+                    </Select.Item>
+                  ))}
+                </Select.Group>
+              </Select.Content>
+            </Select.Root>
+          )}
+        />
+
         <Controller
           name="description"
           control={control}
